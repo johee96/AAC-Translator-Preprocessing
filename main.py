@@ -2,16 +2,16 @@ import posTagging, fileProcessing
 import pandas as pd
 
 # merge files
-# symbolDatas = fileProcessing.mergeFiles('symbolData','symbol')
-# dlgDatas = fileProcessing.mergeFiles('data','')
+#symbolData = fileProcessing.mergeFiles('symbolData','symbol')
+#dlgData = fileProcessing.mergeFiles('dlgData','')
 
 symbolData = fileProcessing.readFile('symbolData/all.xlsx')
 dlgData = fileProcessing.readFile('data/all.xlsx')
-# posTagging.symbolProcessing(symbolDatas)
+
+posTagging.symbolProcessing(symbolData)
 taggingData, rateData = posTagging.symbolMatching(symbolData, dlgData)
 fileProcessing.saveFile(dlgData, taggingData, rateData)
 """
-
 1. 품사 태깅달고 해보기
 2. 품사 태깅 안 달고 단어로만 해보기
 3. 상징에 사용된 품사를 바탕으로 사용할 품사 정하기 

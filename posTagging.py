@@ -2,7 +2,8 @@ import konlpy
 import nltk
 import pandas as pd
 
-posList = ['NNG', 'NNP', 'NNB', 'NR', 'NP', 'VV', 'VA', 'VX', 'SL', 'SN', 'MM', 'MAG', 'XR', 'MAJ', 'MM']
+posList = ['NNG', 'NNP', 'NNB', 'NR', 'NP', 'VV', 'VA', 'VX', 'SL', 'SN', 'MM', 'MAG', 'XR', 'MAJ', 'XSN', 'XSV',
+           'XSA', 'VCN']
 
 
 def symbolProcessing(symbolDatas):
@@ -33,14 +34,14 @@ def symbolMatching(symbolDatas, dlgDatas):
 
     for sentence in dlgDatas.values:
         sentDataList = list()  # 문장에 해당하는 list
-
+        # print(sentence[0])
         tmp = komoran.pos(sentence[0])
         words = list()
         for word in tmp:
             if word[1] in posList:
                 words.append(word)
-        # print(tmp)
-        # print(words)
+        print(tmp)
+        print(words)
 
         low = 0;
         high = len(words) + 1
@@ -60,8 +61,7 @@ def symbolMatching(symbolDatas, dlgDatas):
                     high = len(words) + 1
                 else:
                     high -= 1
-        # print(tmpList)
-        # print(sentDataList)
+        print(sentDataList)
         rate = 0
         if cnt > 0:
             rate = cnt / len(words)
@@ -69,10 +69,3 @@ def symbolMatching(symbolDatas, dlgDatas):
         saveData.append(sentDataList)
 
     return saveData, rateData
-
-    """
-    for word in words:
-        if [word] in symbolTaggingData['tagging'].tolist():
-            idx = symbolTaggingData['tagging'].tolist().index([word])
-            saveList.append(symbolTaggingData['name'][idx][0])
-    """
