@@ -3,14 +3,14 @@ import pandas as pd
 
 # merge files
 #symbolData = fileProcessing.mergeFiles('symbolData','symbol')
-#dlgData = fileProcessing.mergeFiles('dlgData','')
+#dlgData = fileProcessing.mergeFiles('dlg', '')
 
 symbolData = fileProcessing.readFile('symbolData/all.xlsx')
-dlgData = fileProcessing.readFile('data/all.xlsx')
+dlgData = fileProcessing.readFile('dlgData/SentData_200.xlsx')
 
-posTagging.symbolProcessing(symbolData)
-taggingData, rateData = posTagging.symbolMatching(symbolData, dlgData)
-fileProcessing.saveFile(dlgData, taggingData, rateData)
+#posTagging.symbolProcessing(symbolData)
+sentPosData,sentSymbolTaggingData, rateData = posTagging.symbolMatching(symbolData, dlgData)
+fileProcessing.saveFile(dlgData, sentPosData, sentSymbolTaggingData, rateData)
 """
 1. 품사 태깅달고 해보기
 2. 품사 태깅 안 달고 단어로만 해보기

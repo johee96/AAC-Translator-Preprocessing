@@ -3,7 +3,7 @@ import nltk
 import pandas as pd
 
 posList = ['NNG', 'NNP', 'NNB', 'NR', 'NP', 'VV', 'VA', 'VX', 'SL', 'SN', 'MM', 'MAG', 'XR', 'MAJ', 'XSN', 'XSV',
-           'XSA', 'VCN']
+           'XSA', 'VCN', 'NA', 'NV', 'NF']
 
 
 def symbolProcessing(symbolDatas):
@@ -12,36 +12,43 @@ def symbolProcessing(symbolDatas):
     taggingList = []
     for sentence in symbolDatas.values:
         words = komoran.pos(sentence[0])
-        # print(words)
+       # print(words)
         nameList.append(sentence)
         tmpList = list()
         for word in words:
             if word[1] in posList:
+                if word[1] in ['NNG','NNP','NNB']:          # 명사를 n으로 묶음
+                    word = word[:1] + ('N',)
                 tmpList.append(word)
         taggingList.append(tmpList)
-        # print(tmpList)
+       # print(tmpList)
     taggingData = pd.DataFrame(zip(nameList, pd.Series(taggingList)), columns=['name', 'tagging'])
     return taggingData
 
 
-def symbolMatching(symbolDatas, dlgDatas):
-    saveData = list()
+def symbolMatching(symbolData, dlgData):
+    sentPosData = list()
+    sentSymbolTaggingData = list()
     rateData = list()
+
     komoran = konlpy.tag.Komoran(max_heap_size=1024 * 6)  # 반드시 전역 변수에서 한번만 실행하자
-    symbolPre = symbolProcessing(symbolDatas)
+    symbolPre = symbolProcessing(symbolData)
     symbolTaggingData = symbolPre['tagging'].tolist()
     symbolNameData = symbolPre['name'].tolist()
 
-    for sentence in dlgDatas.values:
+    for sentence in dlgData['sentence'].values:
         sentDataList = list()  # 문장에 해당하는 list
-        # print(sentence[0])
-        tmp = komoran.pos(sentence[0])
+        #print(sentence)
+        tmp = komoran.pos(sentence)
+        sentPosData.append(tmp)
         words = list()
         for word in tmp:
             if word[1] in posList:
+                if word[1] in ['NNG', 'NNP', 'NNB']:  # 명사를 n으로 묶음
+                    word = word[:1] + ('N',)
                 words.append(word)
-        print(tmp)
-        print(words)
+       # print(tmp)
+       # print(words)
 
         low = 0;
         high = len(words) + 1
@@ -61,11 +68,11 @@ def symbolMatching(symbolDatas, dlgDatas):
                     high = len(words) + 1
                 else:
                     high -= 1
-        print(sentDataList)
+     #   print(sentDataList)
         rate = 0
         if cnt > 0:
             rate = cnt / len(words)
         rateData.append(rate)
-        saveData.append(sentDataList)
+        sentSymbolTaggingData.append(sentDataList)
 
-    return saveData, rateData
+    return sentPosData, sentSymbolTaggingData, rateData
