@@ -1,15 +1,19 @@
-import posTagging, fileProcessing
+import posTagging, fileProcessing, symbolProcessing
 import pandas as pd
 
 # merge files
-#symbolData = fileProcessing.mergeFiles('symbolData','symbol')
-#dlgData = fileProcessing.mergeFiles('dlg', '')
+# symbolData = fileProcessing.mergeFiles('symbolData','symbol')
+# dlgData = fileProcessing.mergeFiles('dlg', '')
 
-symbolData = fileProcessing.readFile('symbolData/all.xlsx')
+symbolData = fileProcessing.readFile('symbolData/KAAC_Symbol_File.xlsx', False, False)
+semanticTaggingSymbol = symbolProcessing.getSemanticTaggingSymbol(symbolData)
+
 dlgData = fileProcessing.readFile('dlgData/SentData_200.xlsx')
 
-#posTagging.symbolProcessing(symbolData)
-sentPosData,sentSymbolTaggingData, rateData = posTagging.symbolMatching(symbolData, dlgData)
+# 문장 데이터에 symbol tagging
+sentPosData, sentSymbolTaggingData, rateData = posTagging.symbolMatching(semanticTaggingSymbol, dlgData)
+
+# 저장하기(문장 데이터, 품사 태깅 데이터, 상징 태깅 데이터, 비율)
 fileProcessing.saveFile(dlgData, sentPosData, sentSymbolTaggingData, rateData)
 """
 1. 품사 태깅달고 해보기

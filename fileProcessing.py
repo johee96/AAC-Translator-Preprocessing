@@ -11,17 +11,19 @@ def saveFile(dlgData, sentTaggingData, taggingData, rateData):
     now = datetime.datetime.now()
     nowDatetime = now.strftime('%Y-%m-%d %H:%M:%S')
 
-    dlgData.to_excel("./result/taggingData_"+nowDatetime+".xlsx", header=True, index=False)
+    dlgData.to_excel("./result/taggingData_" + nowDatetime + ".xlsx", header=True, index=False)
     print("save..")
 
 
-def readFile(filePath):
+def readFile(filePath, dropna=True, option=True):
     data = pd.read_excel(filePath, encoding="utf-8", dtype=str)
-    data.iloc[:, 0] = data.iloc[:, 0].str.replace(pat=r'[^A-Za-z0-9가-힝]', repl=r' ',
-                                                  regex=True)  # 뒤에 ?!에 따라서 품사가 다름
-    data.iloc[:, 0] = data.iloc[:, 0].str.strip()  # 앞 뒤 공백 제거
+    if option:
+        data.iloc[:, 0] = data.iloc[:, 0].str.replace(pat=r'[^A-Za-z0-9가-힝]', repl=r' ',
+                                                      regex=True)  # 뒤에 ?!에 따라서 품사가 다름
+        data.iloc[:, 0] = data.iloc[:, 0].str.strip()  # 앞 뒤 공백 제거
     #  data = data.drop_duplicates()                               # 중복제거
-    data = data.dropna(axis=0)  # 비어있는 행 제거
+    if dropna:
+        data = data.dropna(axis=0)  # 비어있는 행 제거
     data = data.reset_index(drop=True)  # reset index
     print(data.head())
     print(data.shape)
